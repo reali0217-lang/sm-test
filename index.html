@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>S·M 倾向测试</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Noto Sans SC',sans-serif;}
+body{
+  min-height:100vh;
+  background:#0a0a12;
+  background-image:
+    radial-gradient(ellipse 90% 70% at 15% 5%,rgba(110,50,220,0.28) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 60% at 85% 90%,rgba(180,50,180,0.22) 0%,transparent 50%),
+    radial-gradient(ellipse 50% 50% at 50% 50%,rgba(70,30,150,0.14) 0%,transparent 65%);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:2rem 1rem 3rem;
+}
+.card{
+  background:rgba(255,255,255,0.045);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(180,120,255,0.16);border-radius:26px;
+  box-shadow:0 8px 56px rgba(100,40,220,0.2),inset 0 1px 0 rgba(255,255,255,0.07);
+  width:100%;max-width:580px;color:#e8e0f8;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,#a060ff,#e040fb);}
+
+/* ── 封面 ── */
+#cover{padding:2.8rem 2.2rem 2.4rem;}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(140,70,255,0.14);border:1px solid rgba(160,100,255,0.28);border-radius:999px;padding:5px 16px;font-size:11px;letter-spacing:0.14em;color:#c4a8ff;text-transform:uppercase;margin-bottom:2rem;}
+.cover-title{font-size:42px;font-weight:700;line-height:1.1;background:linear-gradient(135deg,#e0d0ff 0%,#c084fc 40%,#f0abfc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;letter-spacing:-0.01em;}
+.cover-subtitle{font-size:15px;color:rgba(200,180,255,0.5);margin-bottom:2.2rem;font-weight:300;letter-spacing:0.04em;}
+.cover-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.4rem;}
+.meta-chip{display:flex;align-items:center;gap:6px;background:rgba(120,60,200,0.13);border:1px solid rgba(160,100,255,0.16);border-radius:10px;padding:8px 13px;font-size:13px;color:rgba(210,190,255,0.65);}
+.meta-icon{font-size:14px;}
+.mode-label{font-size:12px;color:rgba(180,150,255,0.45);letter-spacing:0.1em;margin-bottom:10px;text-transform:uppercase;}
+.mode-row{display:flex;gap:10px;margin-bottom:2rem;}
+.mode-btn{flex:1;padding:14px 10px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(160,100,255,0.16);border-radius:14px;cursor:pointer;transition:all 0.2s;text-align:center;color:#c4a8ff;}
+.mode-btn:hover{background:rgba(140,80,255,0.11);border-color:rgba(180,120,255,0.36);}
+.mode-btn.active{background:linear-gradient(135deg,rgba(140,60,255,0.2),rgba(200,60,180,0.16));border-color:rgba(200,120,255,0.52);color:#f0e0ff;box-shadow:0 0 20px rgba(180,80,255,0.13);}
+.mode-icon{font-size:22px;margin-bottom:6px;}
+.mode-title{font-size:14px;font-weight:500;margin-bottom:3px;}
+.mode-desc{font-size:11px;color:rgba(180,150,255,0.45);line-height:1.45;}
+.mode-btn.active .mode-desc{color:rgba(210,180,255,0.55);}
+.start-btn{width:100%;padding:16px;background:linear-gradient(135deg,rgba(140,50,255,0.42),rgba(210,50,190,0.36));border:1px solid rgba(200,100,255,0.48);border-radius:14px;color:#f5eeff;font-size:16px;font-weight:500;cursor:pointer;transition:all 0.22s;letter-spacing:0.06em;font-family:'Noto Sans SC',sans-serif;}
+.start-btn:hover{background:linear-gradient(135deg,rgba(140,50,255,0.58),rgba(210,50,190,0.5));transform:translateY(-2px);box-shadow:0 8px 28px rgba(180,60,255,0.22);}
+
+/* ── 答题 ── */
+#quiz{display:none;padding:2rem 2rem 2.2rem;}
+.logo-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(140,80,255,0.12);border:1px solid rgba(160,100,255,0.24);border-radius:999px;padding:4px 13px;font-size:11px;letter-spacing:0.12em;color:#c4a8ff;text-transform:uppercase;margin-bottom:1.4rem;}
+.prog-track{height:3px;background:rgba(255,255,255,0.07);border-radius:999px;margin-bottom:1.6rem;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#c026d3,#e879f9);border-radius:999px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 10px rgba(200,80,255,0.4);}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;}
+.q-num{font-size:12px;color:rgba(180,150,255,0.42);letter-spacing:0.08em;}
+.q-tag{font-size:11px;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;}
+.q-tag.single{background:rgba(100,60,220,0.16);color:#a78bff;border:1px solid rgba(140,80,255,0.22);}
+.q-tag.multi{background:rgba(200,60,160,0.14);color:#f0abfc;border:1px solid rgba(220,80,200,0.22);}
+.q-text{font-size:19px;font-weight:500;color:#f0eaff;line-height:1.62;margin-bottom:1.3rem;min-height:56px;}
+.multi-hint{font-size:12px;color:rgba(180,150,255,0.38);text-align:center;margin-bottom:10px;letter-spacing:0.04em;}
+.opts-wrap{display:flex;flex-direction:column;gap:9px;margin-bottom:1.3rem;}
+.opt-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(160,100,255,0.15);border-radius:13px;padding:13px 16px;color:#d8ccf5;font-size:14.5px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:11px;line-height:1.5;width:100%;font-family:'Noto Sans SC',sans-serif;}
+.opt-btn:hover{background:rgba(140,80,255,0.12);border-color:rgba(180,120,255,0.38);color:#f0eaff;transform:translateX(3px);}
+.opt-btn.selected{background:rgba(160,80,255,0.18);border-color:rgba(200,120,255,0.52);color:#f5eeff;transform:translateX(3px);}
+.opt-letter{width:26px;height:26px;border-radius:50%;border:1px solid rgba(160,100,255,0.28);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#b08aff;flex-shrink:0;background:rgba(120,60,255,0.1);transition:all 0.2s;}
+.opt-btn.selected .opt-letter{background:rgba(180,80,255,0.32);border-color:rgba(220,140,255,0.55);color:#f0e0ff;}
+.next-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(130,50,240,0.36),rgba(200,50,180,0.3));border:1px solid rgba(190,100,255,0.42);border-radius:13px;color:#f0e0ff;font-size:15px;cursor:pointer;transition:all 0.2s;opacity:0.32;pointer-events:none;font-family:'Noto Sans SC',sans-serif;letter-spacing:0.04em;}
+.next-btn.ready{opacity:1;pointer-events:auto;}
+.next-btn.ready:hover{background:linear-gradient(135deg,rgba(130,50,240,0.52),rgba(200,50,180,0.46));transform:translateY(-1px);}
+
+/* ── 结果 ── */
+#result{display:none;padding:2rem 2rem 2.2rem;}
+#result.visible{display:block;animation:fadeUp 0.5s ease forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+#card-capture{background:linear-gradient(148deg,rgba(28,14,58,0.97),rgba(16,8,38,0.99));border:1px solid rgba(180,120,255,0.18);border-radius:20px;padding:1.8rem 1.6rem 1.4rem;margin-bottom:1.2rem;position:relative;overflow:hidden;}
+#card-capture::before{content:'';position:absolute;top:-70px;right:-70px;width:220px;height:220px;background:radial-gradient(circle,rgba(150,70,255,0.2) 0%,transparent 68%);pointer-events:none;}
+#card-capture::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(220,70,180,0.16) 0%,transparent 68%);pointer-events:none;}
+.card-head{display:flex;align-items:center;gap:14px;margin-bottom:1.2rem;}
+.card-icon{width:58px;height:58px;border-radius:50%;background:rgba(140,60,255,0.17);border:1px solid rgba(180,100,255,0.26);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;}
+.card-title{flex:1;}
+.res-tag{display:inline-block;background:rgba(160,80,255,0.15);border:1px solid rgba(200,120,255,0.26);border-radius:999px;padding:3px 12px;font-size:11px;letter-spacing:0.12em;color:#c4a8ff;text-transform:uppercase;margin-bottom:4px;}
+.res-name{font-size:22px;font-weight:700;color:#f5eeff;line-height:1.2;}
+.res-desc{font-size:13.5px;color:rgba(210,190,255,0.6);line-height:1.78;margin-bottom:1.3rem;border-left:2px solid rgba(160,80,255,0.3);padding-left:12px;}
+.traits-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.2rem;}
+.trait-pill{background:rgba(120,60,200,0.15);border:1px solid rgba(160,100,255,0.17);border-radius:999px;padding:4px 11px;font-size:12px;color:#c4a8ff;}
+.axis-wrap{margin-bottom:0.8rem;}
+.axis-labels{display:flex;justify-content:space-between;font-size:11px;letter-spacing:0.08em;margin-bottom:9px;}
+.axis-m{color:#818cf8;font-weight:500;}
+.axis-s{color:#e879f9;font-weight:500;}
+.axis-track{position:relative;height:6px;background:rgba(255,255,255,0.07);border-radius:999px;margin-bottom:16px;}
+.axis-grad{position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,#4f46e5 0%,#9333ea 50%,#db2777 100%);opacity:0.3;}
+.axis-dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid #c026d3;box-shadow:0 0 14px rgba(220,80,255,0.85),0 0 4px rgba(255,255,255,0.5);transform:translate(-50%,-50%);transition:left 1.3s cubic-bezier(0.34,1.56,0.64,1);}
+.axis-ticks{display:flex;justify-content:space-between;padding:0 2px;}
+.axis-tick{font-size:10px;color:rgba(180,150,255,0.28);}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(255,255,255,0.05);}
+.card-foot-label{font-size:11px;color:rgba(180,150,255,0.26);letter-spacing:0.1em;}
+.card-score{font-size:22px;font-weight:700;color:rgba(220,180,255,0.42);letter-spacing:0.04em;}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;}
+.r-btn{flex:1;min-width:90px;border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;transition:all 0.2s;font-family:'Noto Sans SC',sans-serif;border:1px solid;}
+.r-btn.retry{background:rgba(120,55,210,0.17);border-color:rgba(170,95,255,0.3);color:#e0caff;}
+.r-btn.retry:hover{background:rgba(120,55,210,0.33);transform:translateY(-2px);}
+.r-btn.save{background:linear-gradient(135deg,rgba(150,55,255,0.3),rgba(210,55,195,0.26));border-color:rgba(195,98,255,0.45);color:#f0e0ff;}
+.r-btn.save:hover{background:linear-gradient(135deg,rgba(150,55,255,0.46),rgba(210,55,195,0.42));transform:translateY(-2px);}
+.r-btn.save:disabled{opacity:0.42;cursor:not-allowed;transform:none;}
+.r-btn.share{background:rgba(255,255,255,0.032);border-color:rgba(155,98,255,0.16);color:#b08aff;}
+.r-btn.share:hover{background:rgba(140,80,255,0.1);transform:translateY(-2px);}
+.tip-msg{font-size:12px;color:#a78bff;margin-top:8px;min-height:18px;text-align:center;}
+
+.q-inner{transition:opacity 0.28s;}
+.slide-out{animation:sOut 0.27s ease forwards;}
+.slide-in{animation:sIn 0.32s ease forwards;}
+@keyframes sOut{to{opacity:0;transform:translateX(-26px);}}
+@keyframes sIn{from{opacity:0;transform:translateX(26px);}to{opacity:1;transform:translateX(0);}}
+</style>
+</head>
+<body>
+
+<!-- 封面 -->
+<div class="card" id="cover">
+  <div class="cover-badge"><div class="badge-dot"></div>性格倾向测试 · 2025</div>
+  <div class="cover-title">S · M<br>倾向测试</div>
+  <div class="cover-subtitle">探索你性格深处的主动与被动倾向</div>
+  <div class="cover-meta">
+    <div class="meta-chip"><span class="meta-icon">📋</span>15 道题目</div>
+    <div class="meta-chip"><span class="meta-icon">⏱</span>预计 3 分钟</div>
+    <div class="meta-chip"><span class="meta-icon">🔬</span>5 维度分析</div>
+    <div class="meta-chip"><span class="meta-icon">🎨</span>专属鉴定卡</div>
+  </div>
+  <div class="mode-label">选择答题模式</div>
+  <div class="mode-row">
+    <div class="mode-btn active" id="mode-single" onclick="selectMode('single')">
+      <div class="mode-icon">◎</div>
+      <div class="mode-title">单选模式</div>
+      <div class="mode-desc">每题选 1 个<br>直觉优先，快速完成</div>
+    </div>
+    <div class="mode-btn" id="mode-multi" onclick="selectMode('multi')">
+      <div class="mode-icon">⊞</div>
+      <div class="mode-title">多选模式</div>
+      <div class="mode-desc">每题可多选<br>全面呈现，结果更精准</div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startQuiz()">开始测试 →</button>
+</div>
+
+<!-- 答题 -->
+<div class="card" id="quiz">
+  <div class="logo-badge"><div class="badge-dot"></div>S·M 倾向测试</div>
+  <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  <div class="q-inner" id="q-inner">
+    <div class="q-meta">
+      <div class="q-num" id="q-num">01 / 15</div>
+      <div class="q-tag single" id="q-tag">单选</div>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div class="multi-hint" id="multi-hint">可多选，选完后点击下一题</div>
+    <div class="opts-wrap" id="opts"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQ()">下一题 →</button>
+  </div>
+</div>
+
+<!-- 结果 -->
+<div class="card" id="result">
+  <div class="logo-badge"><div class="badge-dot"></div>S·M 倾向测试 · 结果</div>
+  <div id="card-capture">
+    <div class="card-head">
+      <div class="card-icon" id="res-icon"></div>
+      <div class="card-title">
+        <div class="res-tag" id="res-tag"></div>
+        <div class="res-name" id="res-name"></div>
+      </div>
+    </div>
+    <div class="res-desc" id="res-desc"></div>
+    <div class="traits-row" id="res-traits"></div>
+    <div class="axis-wrap">
+      <div class="axis-labels">
+        <span class="axis-m">◀ M 型 · 被动</span>
+        <span class="axis-s">S 型 · 主动 ▶</span>
+      </div>
+      <div class="axis-track">
+        <div class="axis-grad"></div>
+        <div class="axis-dot" id="axis-dot" style="left:50%"></div>
+      </div>
+      <div class="axis-ticks">
+        <span class="axis-tick">-80</span><span class="axis-tick">-40</span>
+        <span class="axis-tick">0</span>
+        <span class="axis-tick">+40</span><span class="axis-tick">+80</span>
+      </div>
+    </div>
+    <div class="card-foot">
+      <span class="card-foot-label">S · M 倾向测试</span>
+      <span class="card-score" id="res-score"></span>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="r-btn retry" onclick="goHome()">重新测试</button>
+    <button class="r-btn save" id="save-btn" onclick="saveCard()">保存鉴定卡片</button>
+    <button class="r-btn share" onclick="copyLink()">复制链接</button>
+  </div>
+  <p class="tip-msg" id="tip-msg"></p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const Qs = [
+  {t:"聚会冷场时，你的第一反应是？",o:[{l:"主动抛出话题，带动全场",d:10},{l:"等别人先开口，再顺势参与",d:-10},{l:"观察氛围，找准时机插一句",d:0}]},
+  {t:"在陌生人多的场合，你通常会？",o:[{l:"主动自我介绍，积极拓展新认识",d:10},{l:"等别人来找你，保持低调",d:-10},{l:"跟着熟人走，不主动不拒绝",d:0}]},
+  {t:"朋友临时爽约，你会？",o:[{l:"马上联系其他人或自己重新安排",d:10},{l:"取消计划，在家休息",d:-10},{l:"看情况，也许独自出门逛逛",d:0}]},
+  {t:"面对充满不确定的新机会，你的反应是？",o:[{l:"立刻行动，边做边调整",d:10},{l:"等待更多信息再决定",d:-10},{l:"分析利弊，视情况而定",d:0}]},
+  {t:"做重大决定时，你更倾向于？",o:[{l:"自己拍板，不太需要别人意见",d:10},{l:"广泛征求意见后才决定",d:-10},{l:"和亲近的人一起商量",d:0}]},
+  {t:"旅行计划，你喜欢？",o:[{l:"全程自己规划，精细到每个时间点",d:10},{l:"跟团或让别人来安排全部",d:-10},{l:"定大方向，细节随机应变",d:0}]},
+  {t:"团队没有明确负责人时，你会？",o:[{l:"自然站出来，分配任务推进进度",d:10},{l:"等待有人主动，配合执行就好",d:-10},{l:"需要时提建议，但不抢主导权",d:0}]},
+  {t:"同事出错影响了你的工作，你会？",o:[{l:"直接指出来，要求尽快改正",d:10},{l:"默默帮他补救，不想起冲突",d:-10},{l:"私下友好地和他沟通",d:0}]},
+  {t:"被人安排工作内容，你的感受是？",o:[{l:"不太喜欢，更想自己来定方向",d:10},{l:"挺好的，执行别人定好的事很安心",d:-10},{l:"取决于安排是否合理",d:0}]},
+  {t:"在亲密关系里，你更喜欢？",o:[{l:"主动表达，引领关系节奏",d:10},{l:"被引导、被宠溺，感受被照顾",d:-10},{l:"平等互动，不刻意主导",d:0}]},
+  {t:"和伴侣/好友产生矛盾，你通常会？",o:[{l:"直接摊牌，希望当场解决",d:10},{l:"先冷静，等对方主动来和好",d:-10},{l:"选合适时机主动开口沟通",d:0}]},
+  {t:"对方突然沉默不说话时，你会？",o:[{l:"追问到底，不喜欢不明不白",d:10},{l:"也保持沉默，给彼此空间",d:-10},{l:"轻轻问一句，不强求回应",d:0}]},
+  {t:"遇到压力很大的情况，你会？",o:[{l:"立刻着手解决，掌控感让你冷静",d:10},{l:"需要先被陪伴，再思考怎么做",d:-10},{l:"独处消化，整理好再行动",d:0}]},
+  {t:"情绪低落时，你希望身边人怎么做？",o:[{l:"帮你分析问题，给出具体建议",d:10},{l:"什么都不说，陪着你就好",d:-10},{l:"先听你倾诉，再一起想办法",d:0}]},
+  {t:"面对人生的未知，你的态度更接近？",o:[{l:"主动出击，命运自己掌握",d:10},{l:"顺其自然，相信一切自有安排",d:-10},{l:"做好准备，剩下的交给缘分",d:0}]}
+];
+
+const profiles = [
+  {min:70,max:150,icon:'🔥',tag:'S 型 · 支配者',name:'天生的掌舵者',traits:['强主导欲','极高行动力','规则制定者','决策果断','边界分明'],desc:'你拥有强烈的主导意志和行动能量，习惯设定方向、定义规则。在关系与事务中，你的存在本身就是一种引力场——人们被你的决断力吸引，也可能因此感受到压迫。学会拿捏力度，是你最重要的课题。'},
+  {min:25,max:69,icon:'⚡',tag:'S 倾向 · 引领者',name:'行动派的引领者',traits:['偏主动','弹性掌控','善于带动','亲和力强','场景适应'],desc:'你倾向于主动，却不失弹性。你能在需要时挺身而出，也懂得何时退一步。这种灵活的主动性让你在多数场景中游刃有余——既有行动力，又不显得强势。'},
+  {min:-20,max:24,icon:'✨',tag:'Switch · 游走者',name:'灵动的两面人',traits:['高度灵活','角色切换','读懂场合','自由流动','神秘感强'],desc:'主动与被动对你而言只是工具，而非身份。你天生懂得读懂场合，在不同关系中切换自如——这种适应力是你最深的魅力，也是少数人才拥有的性格天赋。'},
+  {min:-69,max:-21,icon:'🌙',tag:'M 倾向 · 信任者',name:'温柔的信任者',traits:['享受被引导','高度感知','情绪滋养','深度信任','给予安全感'],desc:'你享受被理解、被引导的感觉，善于在关系中为强势者提供支撑。你的存在让掌舵者感到被需要，也让空间弥漫柔和的安全感。被动从来不是软弱，而是一种有意识的选择。'},
+  {min:-150,max:-70,icon:'🌊',tag:'M 型 · 深水者',name:'深水里的珍珠',traits:['极强接受力','向内生长','情绪深度','高度顺从','内在丰富'],desc:'你拥有深度的接受力与内在丰富性，喜欢将主导权完全交付给值得信任的人。你的世界是向内生长的，极致的被动背后，往往藏着超强的感知力与情绪深度。'}
+];
+
+let mode='single', cur=0, score=0, selected=[];
+
+function selectMode(m){
+  mode=m;
+  document.getElementById('mode-single').classList.toggle('active',m==='single');
+  document.getElementById('mode-multi').classList.toggle('active',m==='multi');
+}
+
+function startQuiz(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  cur=0;score=0;selected=[];
+  renderQ(false);
+}
+
+function renderQ(animate){
+  const q=Qs[cur];
+  selected=[];
+  document.getElementById('prog').style.width=(cur/Qs.length*100)+'%';
+  document.getElementById('q-num').textContent=String(cur+1).padStart(2,'0')+' / '+Qs.length;
+  const tag=document.getElementById('q-tag');
+  tag.textContent=mode==='single'?'单选':'多选';
+  tag.className='q-tag '+mode;
+  document.getElementById('multi-hint').style.display=mode==='multi'?'block':'none';
+  document.getElementById('next-btn').textContent=cur===Qs.length-1?'查看结果 →':'下一题 →';
+  setReady(false);
+
+  const go=()=>{
+    document.getElementById('q-text').textContent=q.t;
+    const wrap=document.getElementById('opts');
+    wrap.innerHTML='';
+    ['A','B','C'].forEach((l,i)=>{
+      const btn=document.createElement('button');
+      btn.className='opt-btn';
+      btn.innerHTML='<span class="opt-letter">'+l+'</span><span>'+q.o[i].l+'</span>';
+      btn.dataset.i=i;
+      btn.onclick=()=>pick(btn,i);
+      wrap.appendChild(btn);
+    });
+    if(animate){const inn=document.getElementById('q-inner');inn.classList.remove('slide-out');inn.classList.add('slide-in');setTimeout(()=>inn.classList.remove('slide-in'),360);}
+  };
+
+  if(animate){
+    const inn=document.getElementById('q-inner');
+    inn.classList.add('slide-out');
+    setTimeout(()=>{inn.classList.remove('slide-out');go();},260);
+  } else go();
+}
+
+function pick(btn,idx){
+  if(mode==='single'){
+    document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');selected=[idx];setReady(true);
+  } else {
+    if(btn.classList.contains('selected')){btn.classList.remove('selected');selected=selected.filter(i=>i!==idx);}
+    else{btn.classList.add('selected');selected.push(idx);}
+    setReady(selected.length>0);
+  }
+}
+
+function setReady(r){document.getElementById('next-btn').classList.toggle('ready',r);}
+
+function nextQ(){
+  if(!selected.length) return;
+  const q=Qs[cur];
+  if(mode==='single'){
+    score+=q.o[selected[0]].d;
+  } else {
+    const sum=selected.reduce((s,i)=>s+q.o[i].d,0);
+    score+=Math.round(sum/selected.length);
+  }
+  cur++;
+  if(cur>=Qs.length){showResult();return;}
+  renderQ(true);
+}
+
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  setTimeout(()=>{
+    document.getElementById('quiz').style.display='none';
+    const rEl=document.getElementById('result');
+    rEl.style.display='block';
+    setTimeout(()=>rEl.classList.add('visible'),10);
+    const p=profiles.find(p=>score>=p.min&&score<=p.max)||profiles[2];
+    document.getElementById('res-icon').textContent=p.icon;
+    document.getElementById('res-tag').textContent=p.tag;
+    document.getElementById('res-name').textContent=p.name;
+    document.getElementById('res-desc').textContent=p.desc;
+    document.getElementById('res-score').textContent=(score>=0?'+':'')+score;
+    document.getElementById('res-traits').innerHTML=p.traits.map(t=>'<span class="trait-pill">'+t+'</span>').join('');
+    const pct=Math.round(((score+150)/300)*100);
+    setTimeout(()=>{document.getElementById('axis-dot').style.left=Math.min(96,Math.max(4,pct))+'%';},280);
+  },340);
+}
+
+function goHome(){
+  cur=0;score=0;selected=[];
+  const rEl=document.getElementById('result');
+  rEl.classList.remove('visible');rEl.style.display='none';
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('cover').style.display='block';
+  document.getElementById('axis-dot').style.left='50%';
+  setTip('');
+}
+
+function setTip(t){document.getElementById('tip-msg').textContent=t;}
+
+function saveCard(){
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true;btn.textContent='生成中…';
+  html2canvas(document.getElementById('card-capture'),{backgroundColor:'#100826',scale:2,useCORS:true,logging:false})
+    .then(canvas=>{
+      const a=document.createElement('a');
+      a.download='sm-tendency-result.png';a.href=canvas.toDataURL('image/png');a.click();
+      btn.disabled=false;btn.textContent='保存鉴定卡片';
+      setTip('✓ 图片已保存，快发给朋友吧～');
+      setTimeout(()=>setTip(''),3500);
+    }).catch(()=>{btn.disabled=false;btn.textContent='保存鉴定卡片';setTip('保存失败，请截图分享');});
+}
+
+function copyLink(){
+  const url=window.location.href;
+  navigator.clipboard.writeText(url)
+    .then(()=>{setTip('✓ 链接已复制，发给朋友即可直接打开～');setTimeout(()=>setTip(''),3500);})
+    .catch(()=>{prompt('复制以下链接：',url);});
+}
+</script>
+</body>
+</html>
